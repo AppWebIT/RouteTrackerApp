@@ -1,0 +1,54 @@
+Projekt Route Tracking
+
+Screen 0
+========
+Beim Starten der App muss sich der Benutzer authentifizieren.
+
+
+Screen 1
+========
+
+Button Aufzeichnung starten
+Button Archiv anschauen
+
+
+In der App wird ein Button für den Start der Aufzeichnung gedrückt (Timestamp Start setzen).
+
+Button Stop einblenden
+
+Ab diesem Zeitpunkt werden die GPS-Daten getraced und aufgezeichnet und ein Button angezeigt, der die Aufzeichnung wieder beendet.
+Wenn Stop-Button gedrückt wird, wird die gelaufene Strecke (in km), der Zeitraum und die Geschwindigkeit angezeigt und es kann noch ein Kommentar eingegeben werden.
+
+Button Speichern einblenden
+
+Button Anzeigen Karte einblenden
+
+
+Screen 3 - Karte mit Laufdaten anzeigen
+========
+Es wird eine Karte mit den der getraceten Positionsdaten und den berechneten Informationen angezeigt
+
+
+Screen 4 - Archiv anzeigen
+========
+Der Datensatz, der angezeigt werden soll kann aus einer Liste ausgewählt werden -> Screen 3
+
+
+
+Datenbankmodelle
+================
+Tabelle User
+ *ID
+ *Vorname
+ *Nachname
+ *E-Mail
+
+
+Tabelle Recordings
+ * ID
+ * ForeignKey (User)
+ * GPS-Log
+ * Datum
+ * Timestamp Start
+ * Timestamp End
+ * Kommentar
