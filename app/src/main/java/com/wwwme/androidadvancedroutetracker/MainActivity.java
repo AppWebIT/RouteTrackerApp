@@ -81,11 +81,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.nav_tracking) {
             Snackbar.make(findViewById(android.R.id.content), "Import", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_archiv) {
             Snackbar.make(findViewById(android.R.id.content), "Gallerie", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
 
