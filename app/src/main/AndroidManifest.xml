@@ -2,8 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wwwme.androidadvancedroutetracker">
 
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permissions für Anzeige Maps, Netzwerkstatus und Schreiben in Storage -->
+
+    <uses-permission android:name="com.javapapers.android.androidlocationmaps.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -12,26 +25,37 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-    <activity android:name=".MainActivity" >
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" >
 
-    <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
+            <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".Startscreen"
-        android:label="@string/title_activity_startscreen"
-        android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Startscreen"
+            android:label="@string/title_activity_startscreen"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" >
 
-    <intent-filter>
-        <action android:name="com.wwwme.androidadvancedroutetracker.Startscreen" />
-        <category android:name="android.intent.category.DEFAULT" />
-    </intent-filter>
+            <intent-filter>
+                <action android:name="com.wwwme.androidadvancedroutetracker.Startscreen" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
-    </activity>
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA5-N6fTdHBtE7kjRQKnSsZN_6H7MFLegs" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>
