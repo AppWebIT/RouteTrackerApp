@@ -26,6 +26,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -34,6 +35,7 @@ import java.util.TimeZone;
 public class Startscreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public TextView timeLabel;
+    public TextView timeMinKm;
 
     // 01.11.2015 Klasse GPSTracking
     GPSTracking gpsTracking;
@@ -86,6 +88,7 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         // Zeitzone setzen, sonst wird die Zeit nicht von 00:00:00 weg gerechnet
         screenFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         startTimePoint = 0;
+
         stopCounting();
     }
 
@@ -108,6 +111,8 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         gpsTracking = new GPSTracking(Startscreen.this);
     }
 
+
+    // Anzeige aktuell abgelaufene Zeit
     public Date currentTime (){
         long interval = System.currentTimeMillis() - startTimePoint;
         final Date date = new Date(interval);
@@ -168,26 +173,43 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
                         double longitude = intent.getDoubleExtra(GPSTracking.EXTRA_LONGITUDE, 0);
                         double extDistance = intent.getDoubleExtra(GPSTracking.EXTRA_DISTANCE_SUM, 0);
 
+                        // Anzeige Koordinaten
                         TextView lat = (TextView) findViewById(R.id.latitude);
                         lat.setText(String.valueOf(latitude));
                         TextView lng = (TextView) findViewById(R.id.longitude);
                         lng.setText(String.valueOf(longitude));
 
+                        // Berechnung und Anzeige Distanz in km
                         double anzDistance = (Math.round(extDistance))/1000.0;
                         TextView dist = (TextView) findViewById(R.id.kilometer);
                         dist.setText(String.valueOf(anzDistance) + " km");
                         Log.d("Stopuhr", "Distanz: " + anzDistance + " km");
 
+                        // Berechnung Dauer in Sekunden
                         Date date = currentTime();
                         long secs = (date.getTime())/1000;
                         Log.d("Stopuhr", "Zeit: " + secs + " Sekunden");
 
-                        double geschw = extDistance / secs;
-                        Log.d("Stopuhr", "Geschwindigkeit: " + geschw + " m/s");
+                        // Berechnung und Anzeige Geschwindigkeit in km/h
+                        double geschw = extDistance / secs * 3.6;
+                        Log.d("Stopuhr", "Geschwindigkeit: " + geschw + " km/h");
 
                         double anzSpeed = (Math.round(geschw*100))/100.0;
                         TextView speed = (TextView) findViewById(R.id.geschwindigkeit);
-                        speed.setText(String.valueOf(anzSpeed) + " m/s");
+                        speed.setText(String.valueOf(anzSpeed) + " km/h");
+
+                        // Berechnung und Anzeige min + sek für einen km
+                        double anzMinKm = Math.floor(3600 / (extDistance / secs * 3.6) / 60);
+                        double anzSekKm = Math.floor((3600 / (extDistance / secs * 3.6)) % 60);
+                        int min = (int) anzMinKm;
+                        int sek = (int) anzSekKm;
+                        Log.d("StopuhrOriginal", "min pro km: " + 3600 / (extDistance / secs * 3.6) / 60 + " min " + (3600 / (extDistance / secs * 3.6)) % 60 + " s pro km");
+                        Log.d("Stopuhr", "min pro km: " + anzMinKm + " min " + anzSekKm + " s pro km");
+                        TextView minKm = (TextView) findViewById(R.id.MinProKm);
+                        DecimalFormat df = new DecimalFormat("00");
+                        if (min > 0 && min < 100 || sek > 0) {
+                            minKm.setText((df.format(min)) +":"+ (df.format(sek))+ " min/km");
+                        }
 
                     }
                 }, new IntentFilter(GPSTracking.ACTION_LOCATION_BROADCAST)

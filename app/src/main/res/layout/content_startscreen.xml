@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Kilometer"
+        android:text="0.0 km"
         android:id="@+id/kilometer"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
@@ -72,10 +72,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Gescheindigkeit"
+        android:text="0.0 km/h"
         android:id="@+id/geschwindigkeit"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/kilometer"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="00:00 min/km"
+        android:id="@+id/MinProKm"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/geschwindigkeit"/>
 
 </RelativeLayout>
