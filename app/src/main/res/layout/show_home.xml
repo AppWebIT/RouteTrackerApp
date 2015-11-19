@@ -1,56 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:text="@string/start_button"
-        android:layout_below="@+id/TimeLabel"
-        android:layout_centerHorizontal="true"
-        android:onClick="stopButtonClick" />
-
-    <TextView android:textSize="50sp"
-        android:soundEffectsEnabled="true"
-        android:layout_width="wrap_content"
-        android:id="@+id/TimeLabel"
-        android:gravity="left|center"
-        android:typeface="sans"
-        android:layout_marginBottom="10dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true" />
-
-    <!-- Ursprünglicher Aufruf -->
-
-    <!--    android:text="Waiting for click..."
-   -->
-    <!--    android:onClick="stopButtonClick"
-            android:clickable="true"
-    -->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/longitude"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/btnStart"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/latitude"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/longitude"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -60,7 +13,9 @@
         android:id="@+id/kilometer"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/latitude"/>
+        android:layout_below="@+id/latitude"
+        android:layout_marginTop="250dp"
+        android:layout_gravity="top|center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,7 +25,21 @@
         android:id="@+id/geschwindigkeit"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/kilometer"/>
+        android:layout_below="@+id/kilometer"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="275dp" />
+
+    <TextView
+        android:textSize="50sp"
+        android:text="Timelabel"
+        android:id="@+id/TimeLabel"
+        android:soundEffectsEnabled="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:typeface="sans"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="80dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,7 +49,44 @@
         android:id="@+id/MinProKm"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/geschwindigkeit"/>
+        android:layout_below="@+id/geschwindigkeit"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="300dp" />
 
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="@string/start_button"
+        android:layout_below="@+id/TimeLabel"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="150dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Breitengrad"
+        android:id="@+id/latitude"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/longitude"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="200dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Längengrad"
+        android:id="@+id/longitude"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnStart"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="225dp" />
 
 </FrameLayout>
+
+

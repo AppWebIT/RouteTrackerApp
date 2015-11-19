@@ -18,13 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StringWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by Manfred Zlamala on 01.11.2015.
@@ -44,14 +40,12 @@ public class GPSTracking extends Service implements LocationListener {
     double latitude; // latitude
     double longitude; // longitude
 
-    JSONObject track = new JSONObject();
-    JSONArray coordsList = new JSONArray();
-
+    public JSONObject track = new JSONObject();
+    public static JSONArray coordsList = new JSONArray();
 
     // 01.11.2015 Zlamala: Deklarationen für Berechnungen
     double distance;
     double distanceSum;
-    String mLastUpdateTime;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
 
@@ -62,8 +56,6 @@ public class GPSTracking extends Service implements LocationListener {
             EXTRA_LONGITUDE = "extra_longitude",
             EXTRA_DISTANCE_SUM = "extra_distance_sum";
 
-    // LocationRequest mLocationRequest;
-
     // Flags für Status GPS
     boolean isGPSEnabled = false;
     boolean canGetLocation = false;
@@ -72,11 +64,10 @@ public class GPSTracking extends Service implements LocationListener {
     boolean isNetworkEnabled = false;
 
     // Die minimale Distanz für Updates in Meter
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 Meter
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 5 Meter
 
     // Die minimale Zeit zwischen den Updates in Millisekunden
     private static final long MIN_TIME_BW_UPDATES = 1000; // 1 Sekunde
-
 
     public GPSTracking(Context context) {
         this.mContext = context;
@@ -214,7 +205,6 @@ public class GPSTracking extends Service implements LocationListener {
         }
     }
 
-
     public double getDistance(double lat1, double lon1, double lat2, double lon2) {
       /*
        * 01.11.2015 Zlamala: Berechnung Distanz anhand Haversine Formel
@@ -282,28 +272,6 @@ public class GPSTracking extends Service implements LocationListener {
         Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
         String trackText = coordsList.toString();
         Log.d(TAG, trackText);
-
-
-
-/*
-            Log.d(TAG, "---- Berechnung JSON - Erstellung Map----");
-            Map coord = new LinkedHashMap();
-            Log.d(TAG, "---- Berechnung JSON - put latlng in Map ----");
-            coord.put("lat", mCurrentLocation.getLatitude());
-            coord.put("lng", mCurrentLocation.getLongitude());
-            JSONObject coordOutput = new JSONObject(coord);
-            String coordText = coordOutput.toString();
-            Log.d(TAG, coordText);
-            Log.d(TAG, "---- Berechnung JSON - add Map to List ----");
-         //   coords.add(coord);
-            Log.d(TAG, "---- Berechnung JSON - Ausgabe in Log ----");
-            String jsonText = coords.toString();
-            Log.d(TAG, jsonText);
-            Log.d(TAG, "---- Berechnung JSON - Ausgabe JSON Objekt in Log ----");
-            JSONObject coordsOutput = new JSONObject((Map) coords);
-            String coordsText = coordsOutput.toString();
-            Log.d(TAG, coordsText);
-*/
 
         sendBroadcastMessage(mCurrentLocation, distanceSum);
 
