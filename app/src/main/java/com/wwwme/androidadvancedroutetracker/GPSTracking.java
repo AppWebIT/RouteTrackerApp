@@ -14,6 +14,18 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.StringWriter;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Created by Manfred Zlamala on 01.11.2015.
  */
@@ -32,10 +44,16 @@ public class GPSTracking extends Service implements LocationListener {
     double latitude; // latitude
     double longitude; // longitude
 
+    JSONObject track = new JSONObject();
+    JSONArray coordsList = new JSONArray();
+
+
     // 01.11.2015 Zlamala: Deklarationen für Berechnungen
     double distance;
     double distanceSum;
     String mLastUpdateTime;
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
 
     // 01.11.2015 Zlamala: Deklarationen für BroadcastReceiver
     public static final String
@@ -54,7 +72,7 @@ public class GPSTracking extends Service implements LocationListener {
     boolean isNetworkEnabled = false;
 
     // Die minimale Distanz für Updates in Meter
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 Meter
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 Meter
 
     // Die minimale Zeit zwischen den Updates in Millisekunden
     private static final long MIN_TIME_BW_UPDATES = 1000; // 1 Sekunde
@@ -62,6 +80,7 @@ public class GPSTracking extends Service implements LocationListener {
 
     public GPSTracking(Context context) {
         this.mContext = context;
+
         getLocation();
     }
 
@@ -82,7 +101,7 @@ public class GPSTracking extends Service implements LocationListener {
                 // Kein Netzwerkbetreiber
             } else {
                 this.canGetLocation = true;
-                if (isNetworkEnabled) {
+/*                if (isNetworkEnabled) {
                     // 01.11.2015 Zlamala: checkSelfPermission hinzugefügt
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -96,7 +115,7 @@ public class GPSTracking extends Service implements LocationListener {
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d(TAG, "----- Netzwerk -----");
+                    Log.d(TAG, "----- Netzwerk aktiv -----");
                     if (locationManager != null) {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -106,8 +125,17 @@ public class GPSTracking extends Service implements LocationListener {
                         }
                     }
                 }
-                // Wenn GPS aktiviert ist, Abfrage der Koordinaten mit GPS Services
+*/                // Wenn GPS aktiviert ist, Abfrage der Koordinaten mit GPS Services
                 if (isGPSEnabled) {
+                    // 01.11.2015 Zlamala: checkSelfPermission hinzugefügt
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            Log.d(TAG, "----- CheckSelfPermission getLastKnownLocation aufgerufen -----");
+                        }
+                    }
+                    // Ende - checkSelfPermission
                     if (location == null) {
                         locationManager.requestLocationUpdates(
                                 LocationManager.GPS_PROVIDER,
@@ -120,6 +148,7 @@ public class GPSTracking extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+
                             }
                         }
                     }
@@ -165,6 +194,23 @@ public class GPSTracking extends Service implements LocationListener {
             // Ende - checkSelfPermission
             locationManager.removeUpdates(GPSTracking.this);
             Log.d(TAG, "----- GPS stoppen -----");
+            long currentDate = System.currentTimeMillis();
+            Log.d(TAG, "----- Datum berechnen -----");
+            final Date date = new Date(currentDate);
+            Log.d(TAG, "---- Berechnung JSON - currentDate = " + dateFormat.format(date) + " ----");
+            try {
+                Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Datum) -----");
+                track.put("datum", dateFormat.format(date));
+                Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Distanz) -----");
+                track.put("distanz", distanceSum);
+                Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Koordinaten) -----");
+                track.put("koordinaten", coordsList);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
+            String trackText = track.toString();
+            Log.d(TAG, trackText);
         }
     }
 
@@ -210,21 +256,61 @@ public class GPSTracking extends Service implements LocationListener {
         if (mOldCurrentLocation == null) {
             mOldCurrentLocation = location;
             distanceSum = 0.0;
-        }
-        else {
+            Log.d(TAG, "---- Berechnung JSON - Liste erzeugen ----");
+
+        } else {
             // 01.11.2015 Zlamala: distance muss vor der Änderung von mOldCurrentLocation aufgerufen werden!!!
-            distance = getDistance(mOldCurrentLocation.getLatitude(),mOldCurrentLocation.getLongitude(),mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
+            distance = getDistance(mOldCurrentLocation.getLatitude(), mOldCurrentLocation.getLongitude(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             mOldCurrentLocation = mCurrentLocation;
             distanceSum = distanceSum + distance;
         }
         mCurrentLocation = location;
 
+        JSONObject coords = new JSONObject();
+
+        try {
+            coords.put("lat", mCurrentLocation.getLatitude());
+            coords.put("lng", mCurrentLocation.getLongitude());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "---- Berechnung JSON - Ausgabe JSON Objekt in Log ----");
+        String coordsText = coords.toString();
+        Log.d(TAG, coordsText);
+        coordsList.put(coords);
+        Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
+        String trackText = coordsList.toString();
+        Log.d(TAG, trackText);
+
+
+
+/*
+            Log.d(TAG, "---- Berechnung JSON - Erstellung Map----");
+            Map coord = new LinkedHashMap();
+            Log.d(TAG, "---- Berechnung JSON - put latlng in Map ----");
+            coord.put("lat", mCurrentLocation.getLatitude());
+            coord.put("lng", mCurrentLocation.getLongitude());
+            JSONObject coordOutput = new JSONObject(coord);
+            String coordText = coordOutput.toString();
+            Log.d(TAG, coordText);
+            Log.d(TAG, "---- Berechnung JSON - add Map to List ----");
+         //   coords.add(coord);
+            Log.d(TAG, "---- Berechnung JSON - Ausgabe in Log ----");
+            String jsonText = coords.toString();
+            Log.d(TAG, jsonText);
+            Log.d(TAG, "---- Berechnung JSON - Ausgabe JSON Objekt in Log ----");
+            JSONObject coordsOutput = new JSONObject((Map) coords);
+            String coordsText = coordsOutput.toString();
+            Log.d(TAG, coordsText);
+*/
+
         sendBroadcastMessage(mCurrentLocation, distanceSum);
 
         Log.d(TAG, "Old Location: " + mOldCurrentLocation.getLatitude() + " " + mOldCurrentLocation.getLongitude());
-        Log.d(TAG, "Current Location: " + mCurrentLocation.getLatitude()+ " " + mCurrentLocation.getLongitude());
+        Log.d(TAG, "Current Location: " + mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude());
         Log.d(TAG, "Distance: " + distance + "m");
-        Log.d(TAG, "DistanceSum: " + Math.round(distanceSum * 1000)/1000 + "m");
+        Log.d(TAG, "DistanceSum: " + Math.round(distanceSum * 1000) / 1000 + "m");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.wwwme.androidadvancedroutetracker;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +22,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -35,7 +38,12 @@ import java.util.TimeZone;
 public class Startscreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public TextView timeLabel;
-    public TextView timeMinKm;
+
+    public ShowMap showMap;
+
+    public FragmentManager fragManager;
+    public FragmentTransaction fragTrans;
+
 
     // 01.11.2015 Klasse GPSTracking
     GPSTracking gpsTracking;
@@ -137,13 +145,18 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         }
     };
 
+    // GPS Tracking starten und stoppen
     public void stopButtonClick(View button) {
         if (applicationState == StopWatchStates.IN_COUNTING) {
             stopCounting();
             gpsTracking.stopUsingGPS();
+            Button btnStart = (Button)findViewById(R.id.btnStart);
+            btnStart.setText("Start");
         } else if (applicationState == StopWatchStates.IN_WAITING) {
             startCounting();
             startGPSTracking();
+            Button btnStop = (Button)findViewById(R.id.btnStart);
+            btnStop.setText("Stop");
         }
     }
 
@@ -252,13 +265,22 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
         afterInit();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -298,13 +320,9 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_track) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_archiv) {
 
         } else if (id == R.id.nav_share) {
 
