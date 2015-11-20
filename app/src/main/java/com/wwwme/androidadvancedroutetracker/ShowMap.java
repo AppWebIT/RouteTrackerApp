@@ -58,8 +58,10 @@ public class ShowMap extends Fragment {
 
         for(int i = 0 ; i < length ; i++){
             if (mOldCurrentLocation != null) {
-                mOldCurrentLocation = mCurrentLocation;
-                mCurrentLocation = new Location("dummyprovider");
+                // mOldCurrentLocation = mCurrentLocation;
+                mOldCurrentLocation.setLatitude(mCurrentLocation.getLatitude());
+                mOldCurrentLocation.setLongitude(mCurrentLocation.getLongitude());
+                // mCurrentLocation = new Location("dummyprovider");
                 Log.d(TAG, "----- Schleife mOldCurrentLocation is not null - i = " + String.valueOf(i) + " -----");
                 mCurrentLocation.setLatitude(coords.getJSONObject(i).getDouble("lat"));
                 mCurrentLocation.setLongitude(coords.getJSONObject(i).getDouble("lng"));

@@ -1,6 +1,8 @@
 package com.wwwme.androidadvancedroutetracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -82,7 +84,7 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Daten werden an Server gesendet", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -123,7 +125,7 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up mybutton, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -149,7 +151,8 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         } else if (id == R.id.nav_archiv) {
 
         } else if (id == R.id.nav_logout) {
-
+            Intent intent = new Intent(this, MainActivity.class);
+            this.startActivity(intent);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
