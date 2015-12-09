@@ -1,10 +1,8 @@
 <resources>
+
     <string name="app_name">Route Tracker</string>
 
-    <string name="LoginStatus"></string>
-    <string name="Status"></string>
-    <string name="LoginResponse">Test</string>
-    <string name="Response"></string>
+    <string name="Response">Response</string>
 
     <string name="title_activity_startscreen">Route Tracker</string>
 
