@@ -25,6 +25,7 @@
         android:textColor="#ffffff" />
 
     <EditText
+        android:text=""
         android:layout_width="250dp"
         android:layout_height="35dp"
         android:paddingLeft="10dp"
@@ -42,6 +43,7 @@
         android:textColor="#5f5f5f"/>
 
     <EditText
+        android:text=""
         android:layout_width="250dp"
         android:layout_height="35dp"
         android:paddingLeft="10dp"
@@ -59,13 +61,49 @@
         android:textColor="#5f5f5f" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/app_name"
-        android:id="@+id/textView2"
         android:layout_above="@+id/editEmail"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogin"
+        android:layout_marginTop="86dp"
+        android:text="@string/LoginStatus" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Status"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView6"
+        android:layout_marginTop="27dp"
+        android:text="@string/LoginResponse" />
+
+    <TextView
+        android:id="@+id/response"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Response"
+        android:layout_alignTop="@+id/textView5"
+        android:layout_alignLeft="@+id/textView6"
+        android:layout_alignStart="@+id/textView6" />
 
 </RelativeLayout>

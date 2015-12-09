@@ -39,18 +39,18 @@ public class ShowHome extends Fragment {
     private TextView speed;
     private TextView minkm;
 
-    Context thiscontext;
+    private Context thiscontext;
 
     private Button startBtn;
 
     // 01.11.2015 Klasse GPSTracking
-    GPSTracking gpsTracking;
+    public static GPSTracking GPS_TRACKING;
 
     private static long DELAY = 100;
     private static String IN_COUNTING_LABEL = "Stop";
     private static String IN_WAITING_LABEL = "Start/Renew";
 
-    private String applicationState;
+    public static String STOP_WATCH_STATES = StopWatchStates.IN_WAITING;
 
     private long startTimePoint;
 
@@ -101,7 +101,7 @@ public class ShowHome extends Fragment {
     private Handler tasksHandler = new Handler();
 
     public void startCounting() {
-        applicationState = StopWatchStates.IN_COUNTING;
+        STOP_WATCH_STATES = StopWatchStates.IN_COUNTING;
 
         tasksHandler.removeCallbacks(timeTickRunnable);
         tasksHandler.postDelayed(timeTickRunnable, DELAY);
@@ -110,11 +110,11 @@ public class ShowHome extends Fragment {
     }
 
     public void stopCounting() {
-        applicationState = StopWatchStates.IN_WAITING;
+        STOP_WATCH_STATES = StopWatchStates.IN_WAITING;
     }
 
     public void startGPSTracking(){
-        gpsTracking = new GPSTracking(thiscontext);
+        GPS_TRACKING = new GPSTracking(thiscontext);
     }
 
     // Anzeige aktuell abgelaufene Zeit
@@ -135,7 +135,7 @@ public class ShowHome extends Fragment {
 
     private Runnable timeTickRunnable = new Runnable() {
         public void run() {
-            if (applicationState == StopWatchStates.IN_COUNTING) {
+            if (STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
                 setLabelText(currentTimeString());
                 tasksHandler.postDelayed(timeTickRunnable, DELAY);
             }
@@ -144,11 +144,11 @@ public class ShowHome extends Fragment {
 
     // GPS Tracking starten und stoppen
     public void stopButtonClick (View button) {
-        if (applicationState == StopWatchStates.IN_COUNTING) {
+        if (STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
             stopCounting();
-            gpsTracking.stopUsingGPS();
+            GPS_TRACKING.stopUsingGPS();
             startBtn.setText("Start");
-        } else if (applicationState == StopWatchStates.IN_WAITING) {
+        } else if (STOP_WATCH_STATES == StopWatchStates.IN_WAITING) {
             startCounting();
             startGPSTracking();
             startBtn.setText("Stop");

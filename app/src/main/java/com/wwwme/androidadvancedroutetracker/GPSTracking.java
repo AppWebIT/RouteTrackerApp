@@ -41,7 +41,7 @@ public class GPSTracking extends Service implements LocationListener {
     double longitude; // longitude
 
     public JSONObject track = new JSONObject();
-    public static JSONArray coordsList = new JSONArray();
+    public static JSONArray COORDS_LIST = new JSONArray();
 
     // 01.11.2015 Zlamala: Deklarationen für Berechnungen
     double distance;
@@ -195,7 +195,7 @@ public class GPSTracking extends Service implements LocationListener {
                 Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Distanz) -----");
                 track.put("distanz", distanceSum);
                 Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Koordinaten) -----");
-                track.put("koordinaten", coordsList);
+                track.put("koordinaten", COORDS_LIST);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -229,7 +229,7 @@ public class GPSTracking extends Service implements LocationListener {
         return distance;
     }
 
-    // 01.11.2015 Zlamala: Senden eines Broadcasts an Klasse Startscreen, damit Anzeige aktualisiert wird
+    // 01.11.2015 Zlamala: Senden eines Broadcasts an Klasse ShowHome, damit Anzeige aktualisiert wird
     private void sendBroadcastMessage(Location location, double distance) {
         if (location != null) {
             Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
@@ -268,9 +268,9 @@ public class GPSTracking extends Service implements LocationListener {
         Log.d(TAG, "---- Berechnung JSON - Ausgabe JSON Objekt in Log ----");
         String coordsText = coords.toString();
         Log.d(TAG, coordsText);
-        coordsList.put(coords);
+        COORDS_LIST.put(coords);
         Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
-        String trackText = coordsList.toString();
+        String trackText = COORDS_LIST.toString();
         Log.d(TAG, trackText);
 
         sendBroadcastMessage(mCurrentLocation, distanceSum);

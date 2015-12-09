@@ -1,8 +1,8 @@
 package com.wwwme.androidadvancedroutetracker;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,19 +20,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class Startscreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Startscreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "StartscreenActivity";
+    final Context context = this;
 
     private ShowHome showHome;
     private ShowMap showMap;
 
     public static FragmentManager fragmentManager;
 
+    protected void logout (){
+        if (ShowHome.STOP_WATCH_STATES.equals(StopWatchStates.IN_COUNTING)) {
+            ShowHome.GPS_TRACKING.stopUsingGPS();
+        }
+        Startscreen.this.finish();
+    }
+
     protected void displayHome() {
         Log.d(TAG, "----- displayHome wurde aufgerufen -----");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Log.d(TAG, "----- displayHome - FragmentTransaction wir initialisiert -----");
+        Log.d(TAG, "----- displayHome - FragmentTransaction wird initialisiert -----");
 
         if (showHome.isAdded()) { // if the fragment is already in container
             Log.d(TAG, "----- displayHome - showHome ist bereits im Container -----");
@@ -61,6 +70,38 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         if (showHome.isAdded()) { ft.hide(showHome); }
         // Commit changes
         ft.commit();
+    }
+
+    protected void alertDialogLogout(String title){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        // set title
+        alertDialogBuilder.setTitle(title);
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Route Tracker trotzdem beenden?")
+                .setCancelable(false)
+                .setPositiveButton("Ja",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        logout();
+                    }
+                })
+                .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     @Override
@@ -151,8 +192,22 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         } else if (id == R.id.nav_archiv) {
 
         } else if (id == R.id.nav_logout) {
-            Intent intent = new Intent(this, MainActivity.class);
-            this.startActivity(intent);
+
+            Log.d(TAG, "----- coordsList: "+ GPSTracking.COORDS_LIST.toString() + " -----");
+
+            if (ShowHome.STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
+                alertDialogLogout("Aufzeichnung läuft noch!");
+            }
+            else {
+                if (GPSTracking.COORDS_LIST.toString().equals("[]")) {
+                    logout();
+                } else {
+                    alertDialogLogout("Daten noch nicht gespeichert!");
+                }
+            }
+            // Pseudo Logout - App wird neu gestatet
+            // Intent intent = new Intent(this, MainActivity.class);
+            // this.startActivity(intent);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -175,4 +230,7 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
         super.onStop();
         stopService(new Intent(this, GPSTracking.class));
     }
+
+
+
 }
