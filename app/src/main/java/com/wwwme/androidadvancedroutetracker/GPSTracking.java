@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.TextView;
+
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +43,8 @@ public class GPSTracking extends Service implements LocationListener {
     double latitude; // latitude
     double longitude; // longitude
 
-    public JSONObject track = new JSONObject();
-    public static JSONArray COORDS_LIST = new JSONArray();
+    public static JSONObject track = new JSONObject();
+    public static JSONArray coordsList = new JSONArray();
 
     // 01.11.2015 Zlamala: Deklarationen für Berechnungen
     double distance;
@@ -69,10 +72,22 @@ public class GPSTracking extends Service implements LocationListener {
     // Die minimale Zeit zwischen den Updates in Millisekunden
     private static final long MIN_TIME_BW_UPDATES = 1000; // 1 Sekunde
 
+    // Deklarationen für das Speichern der Daten in der Datenbank
+    public String response;
+    private String user_id;
+    public static String trackText;
+
     public GPSTracking(Context context) {
         this.mContext = context;
 
         getLocation();
+    }
+
+    public void GPSsaveData (){
+        Log.d(TAG, "----- Abfrage user_id " + MainActivity.username + " aus Datenbank -----");
+        new GetUserID(this).execute(MainActivity.username);
+        Log.d(TAG, "----- Response: " + response + " -----");
+
     }
 
     public Location getLocation() {
@@ -194,13 +209,18 @@ public class GPSTracking extends Service implements LocationListener {
                 track.put("datum", dateFormat.format(date));
                 Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Distanz) -----");
                 track.put("distanz", distanceSum);
+                Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (gelaufene Zeit) -----");
+                Date time = ShowHome.currentTime();
+                long secs = (time.getTime()) / 1000;
+                Log.d("Stopuhr", "Zeit: " + secs + " Sekunden");
+                track.put("zeit", secs);
                 Log.d(TAG, "----- Berechnung JSON - Track mit Daten befüllen (Koordinaten) -----");
-                track.put("koordinaten", COORDS_LIST);
+                track.put("koordinaten", coordsList);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
-            String trackText = track.toString();
+            trackText = track.toString();
             Log.d(TAG, trackText);
         }
     }
@@ -268,9 +288,9 @@ public class GPSTracking extends Service implements LocationListener {
         Log.d(TAG, "---- Berechnung JSON - Ausgabe JSON Objekt in Log ----");
         String coordsText = coords.toString();
         Log.d(TAG, coordsText);
-        COORDS_LIST.put(coords);
+        coordsList.put(coords);
         Log.d(TAG, "---- Berechnung JSON - Ausgabe Track in Log ----");
-        String trackText = COORDS_LIST.toString();
+        String trackText = coordsList.toString();
         Log.d(TAG, trackText);
 
         sendBroadcastMessage(mCurrentLocation, distanceSum);

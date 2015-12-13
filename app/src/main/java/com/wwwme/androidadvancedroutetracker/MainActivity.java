@@ -23,6 +23,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
 
+    public static String username;
+    private String password;
+
     private Button btnLogin;
 
     // Initialisierung Variablen für Login
@@ -114,8 +117,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void btnLoginClick(){
-        String username = usernameEdit.getText().toString();
-        String password = passwordEdit.getText().toString();
+        username = usernameEdit.getText().toString();
+        password = passwordEdit.getText().toString();
         new SigninActivity(this,status,response).execute(username, password);
     }
 

@@ -1,21 +1,18 @@
 package com.wwwme.androidadvancedroutetracker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**
- * Created by WDEZLA on 09.12.2015.
+ * Created by Zlamala on 09.12.2015.
  */
 public class SigninActivity extends AsyncTask<String,Void,String>{
 
@@ -74,7 +71,7 @@ public class SigninActivity extends AsyncTask<String,Void,String>{
                 String username = (String)arg0[0];
                 String password = (String)arg0[1];
 
-                String link="http://disk69700305.dscloud.biz/routetracker/loginandroid.php";
+                String link="http://disk69700305.dscloud.biz/routetracker/android/loginandroid.php";
                 String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
                 data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
 

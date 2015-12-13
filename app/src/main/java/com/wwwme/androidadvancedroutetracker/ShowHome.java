@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -44,19 +45,30 @@ public class ShowHome extends Fragment {
     private Button startBtn;
 
     // 01.11.2015 Klasse GPSTracking
-    public static GPSTracking GPS_TRACKING;
+    public static GPSTracking gpsTracking;
 
     private static long DELAY = 100;
     private static String IN_COUNTING_LABEL = "Stop";
     private static String IN_WAITING_LABEL = "Start/Renew";
 
-    public static String STOP_WATCH_STATES = StopWatchStates.IN_WAITING;
+    public static String stopWatchStates = StopWatchStates.IN_WAITING;
 
-    private long startTimePoint;
+    private static long startTimePoint;
 
     private SimpleDateFormat screenFormat = new SimpleDateFormat("HH:mm:ss.S", Locale.GERMAN);
 
-    //20.10.2015 Zlamala: GPS-Abfrage mit Daten speichern
+    // 12.12.2015 Zlamala: Floating Action Button ein- und ausblenden
+    private void showFAB (){
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.show();
+    }
+
+    private void hideFAB (){
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.hide();
+    }
+
+    // 20.10.2015 Zlamala: GPS-Abfrage mit Daten speichern
     // 01.11.2015 Zlamala: wird vorerst nicht benötigt
 /*    private final LocationListener locationListener = new LocationListener() {
 
@@ -101,7 +113,7 @@ public class ShowHome extends Fragment {
     private Handler tasksHandler = new Handler();
 
     public void startCounting() {
-        STOP_WATCH_STATES = StopWatchStates.IN_COUNTING;
+        stopWatchStates = StopWatchStates.IN_COUNTING;
 
         tasksHandler.removeCallbacks(timeTickRunnable);
         tasksHandler.postDelayed(timeTickRunnable, DELAY);
@@ -110,15 +122,15 @@ public class ShowHome extends Fragment {
     }
 
     public void stopCounting() {
-        STOP_WATCH_STATES = StopWatchStates.IN_WAITING;
+        stopWatchStates = StopWatchStates.IN_WAITING;
     }
 
     public void startGPSTracking(){
-        GPS_TRACKING = new GPSTracking(thiscontext);
+        gpsTracking = new GPSTracking(thiscontext);
     }
 
     // Anzeige aktuell abgelaufene Zeit
-    public Date currentTime (){
+    public static Date currentTime (){
         long interval = System.currentTimeMillis() - startTimePoint;
         final Date date = new Date(interval);
         return date;
@@ -135,7 +147,7 @@ public class ShowHome extends Fragment {
 
     private Runnable timeTickRunnable = new Runnable() {
         public void run() {
-            if (STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
+            if (stopWatchStates == StopWatchStates.IN_COUNTING) {
                 setLabelText(currentTimeString());
                 tasksHandler.postDelayed(timeTickRunnable, DELAY);
             }
@@ -144,11 +156,19 @@ public class ShowHome extends Fragment {
 
     // GPS Tracking starten und stoppen
     public void stopButtonClick (View button) {
-        if (STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
+
+        if (stopWatchStates == StopWatchStates.IN_COUNTING) {
             stopCounting();
-            GPS_TRACKING.stopUsingGPS();
+            gpsTracking.stopUsingGPS();
+            if (GPSTracking.coordsList.toString().equals("[]")) {
+                hideFAB();
+            }
+            else {
+                showFAB();
+            }
             startBtn.setText("Start");
-        } else if (STOP_WATCH_STATES == StopWatchStates.IN_WAITING) {
+        } else if (stopWatchStates == StopWatchStates.IN_WAITING) {
+            hideFAB();
             startCounting();
             startGPSTracking();
             startBtn.setText("Stop");

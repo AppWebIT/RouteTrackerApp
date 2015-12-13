@@ -31,8 +31,8 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
     public static FragmentManager fragmentManager;
 
     protected void logout (){
-        if (ShowHome.STOP_WATCH_STATES.equals(StopWatchStates.IN_COUNTING)) {
-            ShowHome.GPS_TRACKING.stopUsingGPS();
+        if (ShowHome.stopWatchStates.equals(StopWatchStates.IN_COUNTING)) {
+            ShowHome.gpsTracking.stopUsingGPS();
         }
         Startscreen.this.finish();
     }
@@ -121,13 +121,15 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
             showMap = ShowMap.newInstance("Map");
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Daten werden an Server gesendet", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }
+                showHome.gpsTracking.GPSsaveData();
+                fab.hide();
+                }
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -193,13 +195,13 @@ public class Startscreen extends AppCompatActivity implements NavigationView.OnN
 
         } else if (id == R.id.nav_logout) {
 
-            Log.d(TAG, "----- coordsList: "+ GPSTracking.COORDS_LIST.toString() + " -----");
+            Log.d(TAG, "----- coordsList: "+ GPSTracking.coordsList.toString() + " -----");
 
-            if (ShowHome.STOP_WATCH_STATES == StopWatchStates.IN_COUNTING) {
+            if (ShowHome.stopWatchStates == StopWatchStates.IN_COUNTING) {
                 alertDialogLogout("Aufzeichnung läuft noch!");
             }
             else {
-                if (GPSTracking.COORDS_LIST.toString().equals("[]")) {
+                if (GPSTracking.coordsList.toString().equals("[]")) {
                     logout();
                 } else {
                     alertDialogLogout("Daten noch nicht gespeichert!");
